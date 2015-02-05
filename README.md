@@ -24,12 +24,15 @@ This game requires a web server.
       <ol>
         <li>Browse to the htdocs folder of XAMPP eg. C:\xampp\htdocs</li>
         <li>Copy the extracted contents (step 1) in the folder</li>
+        <li>Open XAMPP Control Panel</li>
+        <li>Click "start" for the Apache Module</li>
         <li>Open a web browser and type "localhost/tetris-swap" in the URL bar</li>
       </ol>
       <li><b>WAMP</b></li>
       <ol>
         <li>Browse to the www folder of WAMP eg. C:\wamp\www</li>
         <li>Copy the extracted contents (step 1) in the folder</li>
+        <li>Start WampServer</li>
         <li>Open a web browser and type "localhost/tetris-swap" in the URL bar</li>
       </ol>
     </ol>
