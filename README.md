@@ -1,5 +1,6 @@
 # Tetris-Swap
-<i>Tetris with a twist</i>
+<i>Tetris with a twist</i><br>
+HTML5/Phaser
 <br><br>
 <b>Current status:</b> almost there. rotation not implemented yet. Some bugs here and there.
 <br><br>
