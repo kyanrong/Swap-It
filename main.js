@@ -2,7 +2,7 @@
 var game = new Phaser.Game(900, 600, Phaser.AUTO, 'game_div', {preload:preload, create:create, update:update});
 
 var sprite_yellow, sprite_orange;                                  // sprites
-var spacebar_key, left_key, right_key, down_key;
+var spacebar_key, left_key_a, right_key_a, down_key_a, left_key_b, right_key_b, down_key_b;
 var x1 = 290, x2 = 590, y = 30;                                    // the starting coords of the grids
 var start_x1 = x1 + 4, start_x2 = x2 + 4, start_y = 7;             // the starting coords of the blocks
 var curr_time = 0, prev_time = 0;
@@ -30,14 +30,22 @@ function create() {
     
     // keyboard controls
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+    this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
+    this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.D]);
+    this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.S]);
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.LEFT]);
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.RIGHT]);
     this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.DOWN]);
     
     spacebar_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    left_key = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-    right_key = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-    down_key = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    left_key_a = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+    right_key_a = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+    down_key_a = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+    left_key_b = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    right_key_b = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    down_key_b = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    
+    spacebar_key.onDown.add(swap, sprite_orange, sprite_yellow);
     
     grid_yellow = new Grid(this.game, start_x1, start_y);
     grid_orange = new Grid(this.game, start_x2, start_y);
@@ -50,22 +58,18 @@ function create() {
     curr_piece_b = new Piece(this.game, start_x2, chooseLane(), choosePieceShape());
     //curr_piece_a = new Piece(this.game, start_x1, 0, 2);
     
-    //next_lane_a = chooseLane();
-    //next_ps_a = choosePieceShape();
+    next_lane_a = chooseLane();
+    next_ps_a = choosePieceShape();
     next_lane_b = chooseLane();
     next_ps_b = choosePieceShape();
     
-    p += 2;
+    /*p += 2;
     next_lane_a = 2;
-    next_ps_a = p;
+    next_ps_a = p;*/
 }
 
-function update() {
-    if(spacebar_key.isDown) {
-        swap();
-    }
-    
-    if(down_key.isDown) {
+function update() {    
+    if(down_key_b.isDown) {
         max_fall_time = 50;
     }
     
@@ -147,8 +151,7 @@ function update() {
 }
 
 // Helper functions 
-function swap() {  
-
+function swap() {
     resetBlockSprites();
     
     if(sprite_orange.x == x1) {
