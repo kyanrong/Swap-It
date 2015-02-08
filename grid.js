@@ -43,6 +43,10 @@ Grid.prototype = {
 			if(sum == 10) { 		// row is complete
 				// shift blocks above j down by one row
 				console.log('row completed');
+				score += 10;
+				scoreText.setText(score.toString());
+				sound_clear.play();
+				console.log(score);
 				for(var n=j-1; n>-1; n--) {
 					for(var m=0; m<10; m++) {
 						this.arr[m][n+1] = this.arr[m][n];

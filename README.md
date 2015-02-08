@@ -2,8 +2,6 @@
 <i>Tetris with a twist</i><br>
 HTML5/Phaser
 <br><br>
-<b>Current status:</b> almost there. rotation not implemented yet. Some bugs here and there.
-<br><br>
 Tetris Swap is part of a 3-week assignment in NM4209 Advanced Game Design. The task is to choose a well-known game mechanic 
 (eg. swap, jump, shoot) and alter it such that players' expectation would be undermined. 
 <br><br>

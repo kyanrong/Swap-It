@@ -12,12 +12,19 @@ var grid_yellow, grid_orange;                                       // stores th
 var curr_piece_a, curr_piece_b;                                     // a is always on the left, b on the right
 var next_ps_a, next_ps_b;                 							 // next piece shape
 var fall_time = 0, max_fall_time = 500;
+var score = 0, scoreText = 0;
+var sound_swap, sound_clear, sound_bg;
 
 function preload() {
     this.game.load.image('sprite_bg', 'assets/bg.png');
     this.game.load.image('sprite_yellow', 'assets/grid_yellow.png');
     this.game.load.image('sprite_orange', 'assets/grid_orange.png');
     this.game.load.image('sprite_block', 'assets/block.png');
+	this.load.bitmapFont('font_sunn', 'assets/sunn.png', 'assets/sunn.fnt');
+	this.load.audio('audio_swap', 'assets/swap.mp3');
+	this.load.audio('audio_clear', 'assets/clear.mp3');
+	this.load.audio('audio_fall', 'assets/fall.mp3');
+	this.load.audio('audio_bg', 'assets/bg.mp3');
 }
 
 function create() {
@@ -57,6 +64,14 @@ function create() {
     next_ps_b = choosePieceShape();
 
 	spacebar_key.onDown.add(swap, sprite_orange, sprite_yellow);
+	
+	scoreText = this.game.add.bitmapText(145, 491, 'font_sunn', score.toString(), 65);
+	scoreText.visible = true;
+	
+	sound_swap = this.game.add.audio('audio_swap');
+	sound_clear = this.game.add.audio('audio_clear');
+	sound_bg = this.game.add.audio('audio_bg', 1, true);
+	sound_bg.play('', 0, 1, true);
 }
 
 function update() {    
@@ -137,6 +152,7 @@ function swap() {
 
     renderUpdatedGrid(grid_yellow);
     renderUpdatedGrid(grid_orange);
+	sound_swap.play();
     console.log('swap done');
 }
 
@@ -190,10 +206,10 @@ function collide(curr_piece, grid) {
         return true;
     }
     
-    // collide with other pieces
+    // collide with other pieces  
     for(var i=0; i<curr_piece.blocks.length; i++) {
         var coord = translateToArrayCoord(curr_piece.blocks[i].x, curr_piece.blocks[i].y, grid.piece_start_x);
-        if(grid.arr[coord[0]][coord[1]+1] == 1) {
+        if(grid.arr[coord[0]][coord[1]+1]==1) {		
             return true;
         }
     }
