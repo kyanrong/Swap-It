@@ -14,6 +14,7 @@ var next_ps_a, next_ps_b;                 							 // next piece shape
 var fall_time = 0, max_fall_time = 1000, move_time = 0;
 var score = 0, scoreText = 0;
 var sound_swap, sound_clear, sound_bg;
+var gameover = false;
 
 function preload() {
     this.game.load.image('sprite_bg', 'assets/bg.png');
@@ -23,6 +24,7 @@ function preload() {
 	this.game.load.image('sprite_swap_y', 'assets/swap_yellow_left.png');
 	this.game.load.image('sprite_swap_o', 'assets/swap_orange_left.png');
 	this.game.load.image('sprite_rowcleared', 'assets/rowcleared.png');
+	this.game.load.image('sprite_gameover', 'assets/gameover.png');
 	this.load.bitmapFont('font_sunn', 'assets/sunn.png', 'assets/sunn.fnt');
 	this.load.audio('audio_swap', 'assets/swap.mp3');
 	this.load.audio('audio_clear', 'assets/clear.mp3');
@@ -77,37 +79,30 @@ function create() {
 	sound_bg.play('', 0, 1, true);
 }
 
-function update() {    
-    if(down_key_a.isDown || down_key_b.isDown) { max_fall_time = 50; }
-	if(left_key_a.isDown) { 
-			if(this.game.time.now > move_time) { moveLeft(curr_piece_a); move_time = this.game.time.now + 200;}
-		}
-		if(left_key_b.isDown) { 
-			if(this.game.time.now > move_time) { moveLeft(curr_piece_b); move_time = this.game.time.now + 200;}
-		}
-		if(right_key_a.isDown) { 
-			if(this.game.time.now > move_time) { moveRight(curr_piece_a); move_time = this.game.time.now + 200;}
-		}
-		if(right_key_b.isDown) { 
-			if(this.game.time.now > move_time) { moveRight(curr_piece_b); move_time = this.game.time.now + 200;}
-		}
+function update() { 
+	if(gameover) {
+		this.game.add.sprite(255, 0, 'sprite_gameover');
+		return;
+	}
+	else {
+	    if(down_key_a.isDown || down_key_b.isDown) { max_fall_time = 50; }
+		if(left_key_a.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_a); move_time = this.game.time.now + 200;}}
+		if(left_key_b.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_b); move_time = this.game.time.now + 200;}}
+		if(right_key_a.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_a); move_time = this.game.time.now + 200;}}
+		if(right_key_b.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_b); move_time = this.game.time.now + 200;}}
     
-    if(this.game.time.now > fall_time) {
-	
-        
+		if(this.game.time.now > fall_time) {
 		
-        // check the sprite positions of the grids
-        // piece_a always on the left, piece_b always on the right
-        if(onLeft(sprite_yellow)) {         // == sprite_orange on the right
-		
-			//updategrid, checkcompletedrow, resetblocksprites, renderupdatedgrid
-            if(collide(curr_piece_a, grid_yellow)) {
-                grid_yellow.updateGrid(curr_piece_a, grid_yellow);
-                destroyPiece(curr_piece_a);
+			// check the sprite positions of the grids
+			// piece_a always on the left, piece_b always on the right
+			if(onLeft(sprite_yellow)) {         // == sprite_orange on the right
+				if(collide(curr_piece_a, grid_yellow)) {
+					grid_yellow.updateGrid(curr_piece_a, grid_yellow);
+					destroyPiece(curr_piece_a);
                 
-                curr_piece_a = new Piece(this.game, start_x1, 4, next_ps_a);
-                next_ps_a = choosePieceShape();
-            }
+					curr_piece_a = new Piece(this.game, start_x1, 4, next_ps_a);
+					next_ps_a = choosePieceShape();
+				}
             if(collide(curr_piece_b, grid_orange)) {
                 grid_orange.updateGrid(curr_piece_b, grid_orange);
                 destroyPiece(curr_piece_b);
@@ -141,7 +136,9 @@ function update() {
         //prev_time = curr_time;
         fall_time = this.game.time.now + max_fall_time;
         max_fall_time = 500;
-    }
+		}
+	}
+
 }
 
 // Helper functions 

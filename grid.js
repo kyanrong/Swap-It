@@ -29,8 +29,14 @@ Grid.prototype = {
     updateGrid: function(curr_piece, grid) {
 		// if pieces collide
 		for(var i=0; i<curr_piece.blocks.length; i++) {
-			var coord = translateToArrayCoord(curr_piece.blocks[i].x, curr_piece.blocks[i].y, this.piece_start_x);
-			this.arr[coord[0]][coord[1]] = 1;
+			if(curr_piece.blocks[i].y == this.piece_start_y) {
+				gameover = true;
+				return;
+			}
+			else {
+				var coord = translateToArrayCoord(curr_piece.blocks[i].x, curr_piece.blocks[i].y, this.piece_start_x);
+				this.arr[coord[0]][coord[1]] = 1;
+			}
 		}
 		renderUpdatedGrid(grid);
 		
@@ -40,16 +46,18 @@ Grid.prototype = {
 			for(var i=0; i<10; i++) {
 				sum += this.arr[i][j];
 			}
-			if(sum == 10) { 		// row is complete
+			if(sum == 10) { 		 // row is complete
 				// shift blocks above j down by one row
 				var sprite_rowcleared = this.game.add.sprite(this.piece_start_x+45, 100, 'sprite_rowcleared');
 				sprite_rowcleared.alpha = 0;
 				this.game.add.tween(sprite_rowcleared).to({alpha:1}, 500, Phaser.Easing.Linear.None,  true, 0, 0, true);
+				
 				console.log('row completed');
 				score += 10;
 				scoreText.setText(score.toString());
 				sound_clear.play();
 				console.log(score);
+				
 				for(var n=j-1; n>-1; n--) {
 					for(var m=0; m<10; m++) {
 						this.arr[m][n+1] = this.arr[m][n];
