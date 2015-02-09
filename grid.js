@@ -33,7 +33,7 @@ Grid.prototype = {
 			this.arr[coord[0]][coord[1]] = 1;
 		}
 		renderUpdatedGrid(grid);
-			
+		
 		// check if row is completed
 		for(var j=0; j<20; j++) {
 			var sum = 0;
@@ -42,6 +42,9 @@ Grid.prototype = {
 			}
 			if(sum == 10) { 		// row is complete
 				// shift blocks above j down by one row
+				var sprite_rowcleared = this.game.add.sprite(this.piece_start_x+45, 100, 'sprite_rowcleared');
+				sprite_rowcleared.alpha = 0;
+				this.game.add.tween(sprite_rowcleared).to({alpha:1}, 500, Phaser.Easing.Linear.None,  true, 0, 0, true);
 				console.log('row completed');
 				score += 10;
 				scoreText.setText(score.toString());

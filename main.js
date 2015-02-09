@@ -11,7 +11,7 @@ var block_len = 27;                                                 // a block i
 var grid_yellow, grid_orange;                                       // stores the current state of the grid in an array                    
 var curr_piece_a, curr_piece_b;                                     // a is always on the left, b on the right
 var next_ps_a, next_ps_b;                 							 // next piece shape
-var fall_time = 0, max_fall_time = 500;
+var fall_time = 0, max_fall_time = 1000, move_time = 0;
 var score = 0, scoreText = 0;
 var sound_swap, sound_clear, sound_bg;
 
@@ -20,6 +20,9 @@ function preload() {
     this.game.load.image('sprite_yellow', 'assets/grid_yellow.png');
     this.game.load.image('sprite_orange', 'assets/grid_orange.png');
     this.game.load.image('sprite_block', 'assets/block.png');
+	this.game.load.image('sprite_swap_y', 'assets/swap_yellow_left.png');
+	this.game.load.image('sprite_swap_o', 'assets/swap_orange_left.png');
+	this.game.load.image('sprite_rowcleared', 'assets/rowcleared.png');
 	this.load.bitmapFont('font_sunn', 'assets/sunn.png', 'assets/sunn.fnt');
 	this.load.audio('audio_swap', 'assets/swap.mp3');
 	this.load.audio('audio_clear', 'assets/clear.mp3');
@@ -75,14 +78,23 @@ function create() {
 }
 
 function update() {    
-    if(down_key_a.isDown ||down_key_b.isDown) { max_fall_time = 50; }
+    if(down_key_a.isDown || down_key_b.isDown) { max_fall_time = 50; }
+	if(left_key_a.isDown) { 
+			if(this.game.time.now > move_time) { moveLeft(curr_piece_a); move_time = this.game.time.now + 200;}
+		}
+		if(left_key_b.isDown) { 
+			if(this.game.time.now > move_time) { moveLeft(curr_piece_b); move_time = this.game.time.now + 200;}
+		}
+		if(right_key_a.isDown) { 
+			if(this.game.time.now > move_time) { moveRight(curr_piece_a); move_time = this.game.time.now + 200;}
+		}
+		if(right_key_b.isDown) { 
+			if(this.game.time.now > move_time) { moveRight(curr_piece_b); move_time = this.game.time.now + 200;}
+		}
     
     if(this.game.time.now > fall_time) {
 	
-        if(left_key_a.isDown) { max_fall_time = 300; moveLeft(curr_piece_a);}
-        if(left_key_b.isDown) { max_fall_time = 300; moveLeft(curr_piece_b);}
-        if(right_key_a.isDown) { max_fall_time = 300; moveRight(curr_piece_a);}
-        if(right_key_b.isDown) { max_fall_time = 300; moveRight(curr_piece_b);}
+        
 		
         // check the sprite positions of the grids
         // piece_a always on the left, piece_b always on the right
@@ -134,16 +146,23 @@ function update() {
 
 // Helper functions 
 function swap() {
+	var sprite_swap_y = this.game.add.sprite(540, 200, 'sprite_swap_y');
+	sprite_swap_y.alpha = 0;
+	var sprite_swap_o = this.game.add.sprite(540, 200, 'sprite_swap_o');
+	sprite_swap_o.alpha = 0;
+
     resetBlockSprites(grid_yellow);
 	resetBlockSprites(grid_orange);
     
     if(sprite_orange.x == x1) {
+		this.game.add.tween(sprite_swap_y).to({alpha:1}, 500, Phaser.Easing.Linear.None, true, 0, 0, true);
         sprite_orange.x = x2;
         grid_orange.piece_start_x = start_x2;
         sprite_yellow.x = x1;
         grid_yellow.piece_start_x = start_x1;
     }
     else {
+		this.game.add.tween(sprite_swap_o).to({alpha:1}, 500, Phaser.Easing.Linear.None, true, 0, 0, true);
         sprite_orange.x = x1;
         grid_orange.piece_start_x = start_x1;
         sprite_yellow.x = x2;
