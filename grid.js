@@ -27,10 +27,11 @@ Grid.prototype = {
     },
     
     updateGrid: function(curr_piece, grid) {
-		// if pieces collide
 		for(var i=0; i<curr_piece.blocks.length; i++) {
 			if(curr_piece.blocks[i].y <= this.piece_start_y) {
 				gameover = true;
+				sound_bg.stop();
+				sound_gameover.play();
 				return;
 			}
 			else {

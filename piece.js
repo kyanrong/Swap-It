@@ -6,8 +6,11 @@ Piece = function(game, start_x, lane, piece) {
     
     this.lane_num = lane;
     this.piece_type = piece;
+	
     this.blocks = new Array();
-    
+    this.left = new Array();
+	this.right = new Array();
+	
     this.base = undefined;                      
     
     this.drawPiece();
@@ -28,6 +31,8 @@ Piece.prototype = {
                     this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                     this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                     this.base = this.blocks[3];
+					this.left.push(this.blocks[0]); this.left.push(this.blocks[2]); 
+					this.right.push(this.blocks[3]); this.right.push(this.blocks[1]);
                     break;
             
             // i-shape, vertical
@@ -37,6 +42,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+2*block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]); this.left.push(this.blocks[2]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[0]); this.right.push(this.blocks[1]); this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
             
             // o-shape
@@ -46,6 +53,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[1]); this.right.push(this.blocks[3]);
                 break;   
             
             // s-shape, _|-
@@ -55,6 +64,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[0];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[2]);
                 break;
             
             // l-shape, |--
@@ -64,6 +75,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x-block_len, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block'); 
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[2]);
                 break;
             
             // j-shape, --|
@@ -73,6 +86,9 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[1]); this.right.push(this.blocks[2]);
+				
                 break;
                 
             // t-shape _|_
@@ -82,6 +98,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[2]);
                 break;   
             
             // i-shape, horizontal, ----
@@ -91,6 +109,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+2*block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]);
+				this.right.push(this.blocks[3]);
                 break;
                 
             // l-shape, -|
@@ -100,6 +120,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+2*block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[1]); this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
             
             // t-shape, -|-
@@ -109,6 +131,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[2]);
                 break;
             
             // j-shape, |___
@@ -118,6 +142,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[0]);
                 break;
                 
             // s-shape, '-|
@@ -127,6 +153,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]);
+				this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
                 
             // l-shape, |_
@@ -136,6 +164,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[0]); this.right.push(this.blocks[1]);
                 break;
             
             // l-shape, __|
@@ -145,6 +175,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-block_len, 'sprite_block');
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
             
             // j-shape, _|
@@ -154,6 +186,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-2*block_len, 'sprite_block');
                 this.base = this.blocks[0];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[1]); this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
             
             // t-shape, -|
@@ -163,6 +197,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y+block_len, 'sprite_block');
                 this.base = this.blocks[3];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[2]); this.left.push(this.blocks[3]);
+				this.right.push(this.blocks[1]); this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
                 break;
             
             // j-shape, |-
@@ -172,6 +208,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-block_len, 'sprite_block');
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[1]); this.right.push(this.blocks[2]);
                 break;
             
             // z-shape, |-'
@@ -181,6 +219,9 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y-block_len, 'sprite_block');
                 this.base = this.blocks[1];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]);
+				this.right.push(this.blocks[2]); this.right.push(this.blocks[3]);
+				
                 break;
             
             // t-shape, |-
@@ -190,6 +231,8 @@ Piece.prototype = {
                 this.blocks[2] = this.game.add.sprite(block_len*this.lane_num+this.start_x, this.start_y+block_len, 'sprite_block');
                 this.blocks[3] = this.game.add.sprite(block_len*this.lane_num+this.start_x+block_len, this.start_y, 'sprite_block');
                 this.base = this.blocks[2];
+				this.left.push(this.blocks[0]); this.left.push(this.blocks[1]); this.left.push(this.blocks[2]);
+				this.right.push(this.blocks[3]); this.right.push(this.blocks[0]); this.right.push(this.blocks[2]);
                 break;
         } 
     },

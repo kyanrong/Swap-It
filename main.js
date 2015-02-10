@@ -13,7 +13,7 @@ var curr_piece_a, curr_piece_b;                                     // a is alwa
 var next_ps_a, next_ps_b;                 							 // next piece shape
 var fall_time = 0, max_fall_time = 1000, move_time = 0;
 var score = 0, scoreText = 0;
-var sound_swap, sound_clear, sound_bg;
+var sound_swap, sound_clear, sound_bg, sound_gameover;
 var gameover = false;
 
 function preload() {
@@ -30,6 +30,7 @@ function preload() {
 	this.load.audio('audio_clear', 'assets/clear.mp3');
 	this.load.audio('audio_fall', 'assets/fall.mp3');
 	this.load.audio('audio_bg', 'assets/bg.mp3');
+	this.load.audio('audio_gameover', 'assets/gameover.mp3');
 }
 
 function create() {
@@ -70,12 +71,13 @@ function create() {
 
 	spacebar_key.onDown.add(swap, sprite_orange, sprite_yellow);
 	
-	scoreText = this.game.add.bitmapText(145, 491, 'font_sunn', score.toString(), 65);
+	scoreText = this.game.add.bitmapText(145, 498, 'font_sunn', score.toString(), 64);
 	scoreText.visible = true;
 	
 	sound_swap = this.game.add.audio('audio_swap');
 	sound_clear = this.game.add.audio('audio_clear');
 	sound_bg = this.game.add.audio('audio_bg', 1, true);
+	sound_gameover = this.game.add.audio('audio_gameover');
 	sound_bg.play('', 0, 1, true);
 }
 
@@ -177,18 +179,36 @@ function swap() {
 }
 
 function moveLeft(piece) {
+	if(piece.start_x == start_x1) {				// this is piece a
+		var grid = onLeft(sprite_yellow) ? grid_yellow : grid_orange;
+	}	
+	else {											// this is piece b
+		var grid = onLeft(sprite_yellow) ? grid_orange : grid_yellow;
+	}
+	
     if(piece.blocks[0].x > piece.start_x) {
         for(var i=0; i<piece.blocks.length; i++) {
-            piece.blocks[i].x -= block_len;
-        }
+			var coord = translateToArrayCoord(piece.blocks[i].x, piece.blocks[i].y, piece.start_x);
+			if(grid.arr[coord[0]-1][coord[1]] == 1) return;
+		}
+		for(var i=0; i<piece.blocks.length; i++) piece.blocks[i].x -= block_len;	
     }
 }
 
 function moveRight(piece) {
+	if(piece.start_x == start_x1) {				// this is piece a
+		var grid = onLeft(sprite_yellow) ? grid_yellow : grid_orange;
+	}	
+	else {											// this is piece b
+		var grid = onLeft(sprite_yellow) ? grid_orange : grid_yellow;
+	}
+	
     if(piece.blocks[3].x+block_len < piece.start_x+grid_width) {
         for(var i=0; i<piece.blocks.length; i++) {
-            piece.blocks[i].x += block_len;
-        }
+			var coord = translateToArrayCoord(piece.blocks[i].x, piece.blocks[i].y, piece.start_x);
+			if(grid.arr[coord[0]+1][coord[1]] == 1) return;
+		}
+		for(var i=0; i<piece.blocks.length; i++) piece.blocks[i].x += block_len;	
     }
 }
 
@@ -210,7 +230,6 @@ function translateToWorldCoord(x, y, sx) {
 function translateToArrayCoord(x, y, sx) {
     arr_x = (x - sx) / block_len;
     arr_y = (y - start_y) / block_len;
-	console.log(arr_y);
     return [arr_x, arr_y];
 }
 
@@ -224,7 +243,6 @@ function onLeft(sprite) {
 function collide(curr_piece, grid) {
     // collide with grid's base
     if(curr_piece.base.y+block_len == start_y+block_len+grid_height) {
-		console.log(curr_piece.base.y);
         return true;
     }
     
@@ -271,10 +289,9 @@ function checkCompletedRow(grid) {
 		}
 		
 		if(sum == 10) { 		 // row is complete
-			// shift blocks above j down by one row
 			complete.push(j);
 		}
-		
+
 		for(var k=0; k<complete.length; k++) {
 			var sprite_rowcleared = this.game.add.sprite(grid.piece_start_x+45, 100, 'sprite_rowcleared');
 			sprite_rowcleared.alpha = 0;
@@ -283,19 +300,16 @@ function checkCompletedRow(grid) {
 			score += 10;
 			scoreText.setText(score.toString());
 			sound_clear.play();
-				
+			
+			// shift rows above k down
 			for(var n=complete[k]-1; n>-1; n--) {
 				for(var m=0; m<10; m++) {
 						grid.arr[m][n+1] = grid.arr[m][n];
 						grid.arr[m][n] = 0;
 				}
 			}
-		}
-			
-
-			
+		}	
 	}
-	
 	resetBlockSprites(grid);
 	renderUpdatedGrid(grid);
 }
