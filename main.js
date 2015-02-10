@@ -86,10 +86,10 @@ function update() {
 	}
 	else {
 	    if(down_key_a.isDown || down_key_b.isDown) { max_fall_time = 50; }
-		if(left_key_a.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_a); move_time = this.game.time.now + 200;}}
-		if(left_key_b.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_b); move_time = this.game.time.now + 200;}}
-		if(right_key_a.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_a); move_time = this.game.time.now + 200;}}
-		if(right_key_b.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_b); move_time = this.game.time.now + 200;}}
+		if(left_key_a.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_a); move_time = this.game.time.now + 150;}}
+		if(left_key_b.isDown) { if(this.game.time.now > move_time) { moveLeft(curr_piece_b); move_time = this.game.time.now + 150;}}
+		if(right_key_a.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_a); move_time = this.game.time.now + 150;}}
+		if(right_key_b.isDown) { if(this.game.time.now > move_time) { moveRight(curr_piece_b); move_time = this.game.time.now + 150;}}
     
 		if(this.game.time.now > fall_time) {
 		
@@ -98,6 +98,7 @@ function update() {
 			if(onLeft(sprite_yellow)) {         // == sprite_orange on the right
 				if(collide(curr_piece_a, grid_yellow)) {
 					grid_yellow.updateGrid(curr_piece_a, grid_yellow);
+					checkCompletedRow(grid_yellow);
 					destroyPiece(curr_piece_a);
                 
 					curr_piece_a = new Piece(this.game, start_x1, 4, next_ps_a);
@@ -106,6 +107,7 @@ function update() {
             if(collide(curr_piece_b, grid_orange)) {
                 grid_orange.updateGrid(curr_piece_b, grid_orange);
                 destroyPiece(curr_piece_b);
+				checkCompletedRow(grid_orange);
 
                 curr_piece_b = new Piece(this.game, start_x2, 4, next_ps_b);
                 next_ps_b = choosePieceShape();
@@ -116,6 +118,7 @@ function update() {
         else {
             if(collide(curr_piece_a, grid_orange)) {
                 grid_orange.updateGrid(curr_piece_a, grid_orange);
+				checkCompletedRow(grid_orange);
                 destroyPiece(curr_piece_a);
 
                 curr_piece_a = new Piece(this.game, start_x1, 4, next_ps_a);
@@ -123,6 +126,7 @@ function update() {
             }
             if(collide(curr_piece_b, grid_yellow)) {
                 grid_yellow.updateGrid(curr_piece_b, grid_yellow);
+				checkCompletedRow(grid_yellow);
                 destroyPiece(curr_piece_b);
                 
                 curr_piece_b = new Piece(this.game, start_x2, 4, next_ps_b);
@@ -143,23 +147,23 @@ function update() {
 
 // Helper functions 
 function swap() {
-	var sprite_swap_y = this.game.add.sprite(540, 200, 'sprite_swap_y');
+	var sprite_swap_y = this.game.add.sprite(540, 170, 'sprite_swap_y');
 	sprite_swap_y.alpha = 0;
-	var sprite_swap_o = this.game.add.sprite(540, 200, 'sprite_swap_o');
+	var sprite_swap_o = this.game.add.sprite(540, 170, 'sprite_swap_o');
 	sprite_swap_o.alpha = 0;
 
     resetBlockSprites(grid_yellow);
 	resetBlockSprites(grid_orange);
     
     if(sprite_orange.x == x1) {
-		this.game.add.tween(sprite_swap_y).to({alpha:1}, 500, Phaser.Easing.Linear.None, true, 0, 0, true);
+		this.game.add.tween(sprite_swap_o).to({alpha:1}, 700, Phaser.Easing.Linear.None, true, 0, 0, true);
         sprite_orange.x = x2;
         grid_orange.piece_start_x = start_x2;
         sprite_yellow.x = x1;
         grid_yellow.piece_start_x = start_x1;
     }
     else {
-		this.game.add.tween(sprite_swap_o).to({alpha:1}, 500, Phaser.Easing.Linear.None, true, 0, 0, true);
+		this.game.add.tween(sprite_swap_y).to({alpha:1}, 700, Phaser.Easing.Linear.None, true, 0, 0, true);
         sprite_orange.x = x1;
         grid_orange.piece_start_x = start_x1;
         sprite_yellow.x = x2;
@@ -188,9 +192,9 @@ function moveRight(piece) {
     }
 }
 
-// 7 shapes, 0 to 6
+// 19 shapes, 0 to 18
 function choosePieceShape() {
-    return Math.floor(Math.random()*7);
+    return Math.floor(Math.random()*19);
 }
 
 // x, y: arr coord of the piece
@@ -206,6 +210,7 @@ function translateToWorldCoord(x, y, sx) {
 function translateToArrayCoord(x, y, sx) {
     arr_x = (x - sx) / block_len;
     arr_y = (y - start_y) / block_len;
+	console.log(arr_y);
     return [arr_x, arr_y];
 }
 
@@ -219,6 +224,7 @@ function onLeft(sprite) {
 function collide(curr_piece, grid) {
     // collide with grid's base
     if(curr_piece.base.y+block_len == start_y+block_len+grid_height) {
+		console.log(curr_piece.base.y);
         return true;
     }
     
@@ -254,4 +260,42 @@ function resetBlockSprites(grid) {
 	for(var i=0; i<grid.grid_sprite.length; i++) {
 		grid.grid_sprite[i].destroy();
 	}
+}
+
+function checkCompletedRow(grid) {
+	for(var j=0; j<21; j++) {
+		var sum = 0;
+		var complete = new Array();
+		for(var i=0; i<10; i++) {
+			sum += grid.arr[i][j];
+		}
+		
+		if(sum == 10) { 		 // row is complete
+			// shift blocks above j down by one row
+			complete.push(j);
+		}
+		
+		for(var k=0; k<complete.length; k++) {
+			var sprite_rowcleared = this.game.add.sprite(grid.piece_start_x+45, 100, 'sprite_rowcleared');
+			sprite_rowcleared.alpha = 0;
+			this.game.add.tween(sprite_rowcleared).to({alpha:1}, 500, Phaser.Easing.Linear.None,  true, 0, 0, true);
+			
+			score += 10;
+			scoreText.setText(score.toString());
+			sound_clear.play();
+				
+			for(var n=complete[k]-1; n>-1; n--) {
+				for(var m=0; m<10; m++) {
+						grid.arr[m][n+1] = grid.arr[m][n];
+						grid.arr[m][n] = 0;
+				}
+			}
+		}
+			
+
+			
+	}
+	
+	resetBlockSprites(grid);
+	renderUpdatedGrid(grid);
 }
